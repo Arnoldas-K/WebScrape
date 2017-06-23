@@ -5,14 +5,10 @@ var Nightmare = require('nightmare');
 var nightmare = Nightmare();
 var co = require('co');
 
-var links = [];
-var data = [];
-
 nightmare
     .useragent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36')
     .viewport(1280, 1024)
     .goto('http://www.grindlondon.com/store/')
-    .screenshot('test.png')
     .wait('#post-4 > div')
     .evaluate(function () {
         var links = [];
@@ -26,30 +22,31 @@ nightmare
         co(getData(newLinks)).then(function (scrapedData) {
             console.log('done');
             nightmare.end();
-            insertData(scrapedData); // inserting data to the db
-            //return insertData;
-        }, function (err) {
-            console.log(err);
+            insertData(scrapedData);
         });
     })
     .catch(function (err) {
         console.error('Found an error ' + err);
     });
 
-function insertData(foundData) { require('../../server')('GRINDLONDON', foundData); }
+function insertData(foundData) {
+    require('../../server')('GRINDLONDON', foundData);
+}
 
 let getData = function *(linksList) {
     let data = [];
-    let linkai = ['http://www.grindlondon.com/product/pullover-navy/', 'http://www.grindlondon.com/product/pullover-mint/', 'http://www.grindlondon.com/product/pullover-white/'];
-    for (let i = 0; i < 2; i++) {
-        console.log(linkai[i]);
+    var errorOccurred = false;
+    for (let i = 0; i < linksList.length; i++) {
+        console.log(linksList[i]);
         var minWaitTime = Math.floor(Math.random() * (30000 - 8000 + 1)) + 8000;
-        let item = yield nightmare.goto(linkai[i]).wait(minWaitTime).evaluate(() => {
+        let item = yield nightmare.goto(linksList[i]).wait(minWaitTime).evaluate(() => {
             var url = window.location.href;
             var price = jQuery('#main').find('div.summary.entry-summary > div:nth-child(2) > p > span').text();
             var type = jQuery('#main').find('nav > a:nth-child(3)').text();
             var sizes = [];
-            jQuery('#size').find('option.attached.enabled').each(function () { sizes.push(this.innerText); });
+            jQuery('#size').find('option.attached.enabled').each(function () {
+                sizes.push(this.innerText);
+            });
             var itemas = {
                 sex: 'Men',
                 season: 'Universal',
@@ -64,7 +61,17 @@ let getData = function *(linksList) {
                 sizes: sizes
             };
             return itemas;
-        });
+            })
+            .catch(error => {
+                console.log(error);
+                if(!errorOccurred) { // if error didn't occur before, give it one more chance
+                    errorOccurred = true;
+                    i--;
+                } else if(errorOccurred){
+                    console.log('Skipping ' + linksList[i]);
+                    errorOccurred = false;
+                }
+            });
         data.push(item);
     }
     return data;
