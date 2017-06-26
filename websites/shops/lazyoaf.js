@@ -58,7 +58,7 @@ let getLinks = function *() {
 let getData = function *(foundLinks) {
     var data = [];
     var errorOccurred = false;
-    for (let i = 15; i < 17; i++) {
+    for (let i = 0; i < foundLinks.length; i++) {
         console.log(foundLinks[i].link);
         var minWaitTime = Math.floor(Math.random() * (30000 - 8000 + 1)) + 8000;
         let item = yield nightmare.goto(foundLinks[i].link).wait(minWaitTime).evaluate(() => {

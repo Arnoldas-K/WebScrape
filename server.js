@@ -7,7 +7,7 @@ var ejs = require('ejs');
 var path = require('path');
 var schedule = require('node-schedule');
 var mongoose = require('mongoose');
-var port = 8060;
+var port = 8000;
 
 // view engine
 app.engine('html', ejs.renderFile);
@@ -17,6 +17,7 @@ app.set('view engine', 'html');
 // main page
 app.get('/', function (req, res) {
     res.render('index');
+    var test = require('./websites/shops/goodhood');
 });
 //unavailable pages
 app.use(function (req, res) {
