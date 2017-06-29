@@ -54,7 +54,7 @@ let collectClothesLinks = function *(pagesLinks) {
     var clothesLinks = [];
     console.log(pagesLinks + ' types of clothes pages');
     for (let i = 0; i < pagesLinks.length; i++) { // i = 0 i < 3 finished | awaits - i 3 i < pagesLinks.length
-        var minWaitTime = Math.floor(Math.random() * (20000 - 8000 + 1)) + 8000;
+        var minWaitTime = Math.floor(Math.random() * (16000 - 8000 + 1)) + 8000;
         let pages = [];
         let nextPages = yield nightmare.goto(pagesLinks[i]).wait(minWaitTime).evaluate(()=> {
             return jQuery('body > div.site-wrapper > div.content-wrapper.wall-wrapper > section.heading-holder > div > div.pag_filter > div').attr('data-pages');
@@ -105,7 +105,7 @@ let collectClothesData = function *(clothesLink) {
     var data = [];
     var errorOccurred = false;
     for (let i = 0; i < clothesLink.length; i++) {
-        console.log(clothesLink[i].link);
+        console.log(clothesLink[i] + '|' + i + '/' + clothesLink.length);
         var minWaitTime = Math.floor(Math.random() * (16000 - 8000 + 1)) + 8000;
         let item = yield nightmare.goto(clothesLink[i].link).wait(minWaitTime).evaluate(() => {
             var url = window.location.href;

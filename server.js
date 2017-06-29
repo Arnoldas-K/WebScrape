@@ -17,7 +17,7 @@ app.set('view engine', 'html');
 // main page
 app.get('/', function (req, res) {
     res.render('index');
-    var test = require('./websites/shops/goodhood');
+    var test = require('./websites/shops/lazyoaf');
 });
 //unavailable pages
 app.use(function (req, res) {

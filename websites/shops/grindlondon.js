@@ -37,8 +37,8 @@ let getData = function *(linksList) {
     let data = [];
     var errorOccurred = false;
     for (let i = 0; i < linksList.length; i++) {
-        console.log(linksList[i]);
-        var minWaitTime = Math.floor(Math.random() * (30000 - 8000 + 1)) + 8000;
+        console.log(linksList[i] + '|' + i + '/' + linksList.length);
+        var minWaitTime = Math.floor(Math.random() * (16000 - 8000 + 1)) + 8000;
         let item = yield nightmare.goto(linksList[i]).wait(minWaitTime).evaluate(() => {
             var url = window.location.href;
             var price = jQuery('#main').find('div.summary.entry-summary > div:nth-child(2) > p > span').text();

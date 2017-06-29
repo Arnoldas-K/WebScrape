@@ -4,7 +4,9 @@
   "description": "Web scraper for clothes",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon server.js"
+    "start" : "pm2 start server.js --name 'web-scrape'",
+    "stop" : "pm2 stop 'web-scrape'",
+    "restart": "pm2 restart 'web-scrape'"
   },
   "author": "Arnoldas K",
   "license": "ISC",

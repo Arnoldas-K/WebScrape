@@ -56,9 +56,9 @@ function insertData(foundData) {
 let collectClothesLinks = function*(pagesLinks) {
     var clothesLinks = [];
     console.log(pagesLinks.length + ' types of clothes pages');
-    for (let i = 0; i < pagesLinks.length; i++) { //
+    for (let i = 10; i < pagesLinks.length; i++) { //
         console.log(pagesLinks[i]);
-        var minWaitTime = Math.floor(Math.random() * (20000 - 8000 + 1)) + 8000;
+        var minWaitTime = Math.floor(Math.random() * (16000 - 8000 + 1)) + 8000;
         let pages = [];
         let nextPages = yield nightmare.goto(pagesLinks[i]).wait(minWaitTime).evaluate(() => {
                 var links = [];
@@ -72,31 +72,31 @@ let collectClothesLinks = function*(pagesLinks) {
             console.log(error);
         });
         console.log(nextPages.length);
-        if (nextPages.length < 1) { // if there is no next pages
-            console.log('just one page ' + pagesLinks[i]);
-            pages = yield nightmare.goto(pagesLinks[i]).wait(minWaitTime).evaluate(() => {
-                var links = [];
-                var type = document.querySelector('body > div.Page > div.Page-Body > p > a:nth-child(5)').innerText;
-                var sex = document.querySelector('body > div.Page > div.Page-Body > p > a:nth-child(3)').innerText;
-                sex = sex[0] + sex.slice(1).toLowerCase();
-                type = type[0] + type.slice(1).toLowerCase();
-                var linksHREF = document.querySelectorAll('body > div.Page > div.Page-Body > div > article > div > ul > li > div.overview > a');
-                for (var i = 0; i < linksHREF.length; i++) {
-                    var linkInfo = {
-                        "type": type,
-                        "sex": sex,
-                        "link": linksHREF[i].href,
-                    };
-                    links.push(linkInfo);
-                }
-                return links;
-            }).catch(error => {
-                console.log(error);
-            });
-        } else if (nextPages.length >= 1) {
-            console.log('more than one page ' + pagesLinks[i]);
+        // scrape initial page
+        pages = yield nightmare.goto(pagesLinks[i]).wait(minWaitTime).evaluate(() => {
+            var links = [];
+            var type = document.querySelector('body > div.Page > div.Page-Body > p > a:nth-child(5)').innerText;
+            var sex = document.querySelector('body > div.Page > div.Page-Body > p > a:nth-child(3)').innerText;
+            sex = sex[0] + sex.slice(1).toLowerCase();
+            type = type[0] + type.slice(1).toLowerCase();
+            var linksHREF = document.querySelectorAll('body > div.Page > div.Page-Body > div > article > div > ul > li > div.overview > a');
+            for (var i = 0; i < linksHREF.length; i++) {
+                var linkInfo = {
+                    "type": type,
+                    "sex": sex,
+                    "link": linksHREF[i].href,
+                };
+                links.push(linkInfo);
+            }
+            return links;
+        }).catch(error => {
+            console.log(error);
+        });
+        // if that page has next pages
+        if (nextPages.length >= 1) {
             for (let p = 0; p < nextPages.length; p++) {
-                let newPages = yield nightmare.goto(pagesLinks[i]).wait(minWaitTime).evaluate(() => {
+                console.log('going to next page ' + nextPages[p]);
+                let newPages = yield nightmare.goto(nextPages[p]).wait(minWaitTime).evaluate(() => {
                     var links = [];
                     var type = document.querySelector('body > div.Page > div.Page-Body > p > a:nth-child(5)').innerText;
                     var sex = document.querySelector('body > div.Page > div.Page-Body > p > a:nth-child(3)').innerText;
@@ -127,7 +127,7 @@ let collectClothesData = function*(clothesLink) {
     var data = [];
     var errorOccurred = false;
     for (let i = 0; i < clothesLink.length; i++) {
-        console.log(clothesLink[i].link);
+        console.log(clothesLink[i] + '|' + i + '/' + clothesLink.length);
         var minWaitTime = Math.floor(Math.random() * (16000 - 8000 + 1)) + 8000;
         let item = yield nightmare.goto(clothesLink[i].link).wait(minWaitTime).evaluate(() => {
             var url = window.location.href;
@@ -168,10 +168,11 @@ let collectClothesData = function*(clothesLink) {
             .catch(error => {
                 console.log(error);
                 if (!errorOccurred) { // if error didn't occur before, give it one more chance
+                    console.log('trying one more time');
                     errorOccurred = true;
                     i--;
                 } else if (errorOccurred) {
-                    console.log('Skipping ' + linksList[i]);
+                    console.log('Skipping ' + clothesLink[i]);
                     errorOccurred = false;
                 }
             });
