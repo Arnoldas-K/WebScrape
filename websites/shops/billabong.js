@@ -36,7 +36,7 @@ nightmare
         co(collectClothesLinks(collectedLinks)).then(function (foundLinks) { // looking if found pages have further pages
             console.log(foundLinks.length + ' - clothes found');
             var uniqueArray = removeDuplicates(foundLinks, "link");
-            console.log("Clothes found after duplicates were removed : " + foundLinks);
+            console.log("Clothes found after duplicates were removed : " + foundLinks.length);
             co(collectClothesData(uniqueArray)).then(function (scrapedData) {
                 console.log(scrapedData.length + ' - scraped clothes');
                 insertData(scrapedData);
