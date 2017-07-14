@@ -13,7 +13,7 @@ function dynamicScheme(nameOfCollection) {
         cover: {type: String},
         hover: {type: String, default: ''},
         url: {type: String},
-        sizes: {type: [String], default: ''}
+        sizes: [{ _id:false, size: { type: String , default: '' } }]
     });
 //module.exports = mongoose.model('Item', ItemSchema);
     return mongoose.model(String(nameOfCollection), ItemSchema);

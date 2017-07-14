@@ -127,7 +127,7 @@ let collectClothesData = function*(clothesLink) {
     var data = [];
     var errorOccurred = false;
     for (let i = 0; i < clothesLink.length; i++) {
-        console.log(clothesLink[i] + '|' + i + '/' + clothesLink.length);
+        console.log(clothesLink[i].url + '|' + i + '/' + clothesLink.length);
         var minWaitTime = Math.floor(Math.random() * (16000 - 8000 + 1)) + 8000;
         let item = yield nightmare.goto(clothesLink[i].link).wait(minWaitTime).evaluate(() => {
             var url = window.location.href;
@@ -137,12 +137,10 @@ let collectClothesData = function*(clothesLink) {
             var sizes = [];
             var brand = document.querySelector('#Brand-Title').innerText;
             var hover = document.querySelector('body > div.Page > div.Page-Body > div > article > div > div > div > div.imgs.list > div:nth-child(1) > a > img').src;
-            ;
-            if (hover === undefined) {
-                hover = '';
-            }
+            if (hover === undefined) { hover = ''; }
             for (var i = 1; i < size.length; i++) {
-                sizes.push(size[i].innerText);
+                var size = { size : size[i].innerText };
+                sizes.push(size);
             }
             var itemData = {
                 sex: '',

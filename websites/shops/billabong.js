@@ -105,7 +105,7 @@ let collectClothesData = function *(clothesLink) {
     var data = [];
     var errorOccurred = false;
     for (let i = 0; i < clothesLink.length; i++) {
-        console.log(clothesLink[i] + '|' + i + '/' + clothesLink.length);
+        console.log(clothesLink[i].url + '|' + i + '/' + clothesLink.length);
         var minWaitTime = Math.floor(Math.random() * (16000 - 8000 + 1)) + 8000;
         let item = yield nightmare.goto(clothesLink[i].link).wait(minWaitTime).evaluate(() => {
             var url = window.location.href;
@@ -114,7 +114,10 @@ let collectClothesData = function *(clothesLink) {
             var sizes = [];
             var hover = String(jQuery('body > div.site-wrapper > div.content-wrapper > section.product-detail.product-detail-index.an > div > div > div.details-gallery > div.alternate-views.row-fluid > div > ul:nth-child(1) > li:nth-child(2) > a').attr('href'));
             if(hover !== undefined){ hover = 'http://eu.billabong.com' + hover;} else { hover = '';}
-            jQuery('#CartIndexForm').find('> div.size-holder > ul > li > a').each(function(){ sizes.push($(this).text()); });
+            jQuery('#CartIndexForm').find('> div.size-holder > ul > li > a').each(function(){
+                var size = { size : $(this).text() };
+                sizes.push(size);
+            });
             var itemData = {
                 sex: '',
                 season: 'Universal',

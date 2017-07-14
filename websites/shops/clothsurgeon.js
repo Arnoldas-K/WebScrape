@@ -62,7 +62,7 @@ let getData = function *(foundLinks) {
     var data = [];
     var errorOccurred = false;
     for (let i = 0; i < foundLinks.length; i++) {
-        console.log(foundLinks[i] + '|' + i + '/' + foundLinks.length);
+        console.log(foundLinks[i].url + '|' + i + '/' + foundLinks.length);
         var minWaitTime = Math.floor(Math.random() * (16000 - 8000 + 1)) + 8000;
         let item = yield nightmare.goto(foundLinks[i].link).wait(minWaitTime).evaluate(() => {
             var url = window.location.href;
@@ -71,11 +71,12 @@ let getData = function *(foundLinks) {
             var sizes = [];
             jQuery('#content > div.product-info.clearfix > div.right > div > div.options > div.option > select > option').each(function(){
                 if($(this).text() !== ' --- Please Select --- ') {
-                    sizes.push($(this).text().trim());
+                    var size = { size : $(this).text().trim() };
+                    sizes.push(size);
                 }
             });
             var itemData = {
-                sex: 'Men',
+                sex: 'Mens',
                 season: 'Universal',
                 type: type,
                 cover: String(jQuery('#content > div.product-info.clearfix > div.left > div:nth-child(4) > img').attr('src')),

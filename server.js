@@ -17,7 +17,9 @@ app.set('view engine', 'html');
 // main page
 app.get('/', function (req, res) {
     res.render('index');
-    var test = require('./websites/shops/lazyoaf');
+    var lazy = require('./websites/shops/lazyoaf');
+    //var grind = require('./websites/shops/grindlondon');
+    //var cloth = require('./websites/shops/clothsurgeon');
 });
 //unavailable pages
 app.use(function (req, res) {
@@ -66,4 +68,3 @@ module.exports = insertDataToDatabase;
 //FINISHED
 //var grindlondon = require('./websites/shops/grindlondon');
 //var lazyoaf = require('./websites/shops/lazyoaf');
-//var lazyoaf = shops.lazyoaf;

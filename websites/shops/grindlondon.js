@@ -37,7 +37,7 @@ let getData = function *(linksList) {
     let data = [];
     var errorOccurred = false;
     for (let i = 0; i < linksList.length; i++) {
-        console.log(linksList[i] + '|' + i + '/' + linksList.length);
+        console.log(linksList[i].url + '|' + i + '/' + linksList.length);
         var minWaitTime = Math.floor(Math.random() * (16000 - 8000 + 1)) + 8000;
         let item = yield nightmare.goto(linksList[i]).wait(minWaitTime).evaluate(() => {
             var url = window.location.href;
@@ -45,10 +45,11 @@ let getData = function *(linksList) {
             var type = jQuery('#main').find('nav > a:nth-child(3)').text();
             var sizes = [];
             jQuery('#size').find('option.attached.enabled').each(function () {
-                sizes.push(this.innerText);
+                var size = { size : this.innerText };
+                sizes.push(size);
             });
             var itemas = {
-                sex: 'Men',
+                sex: 'Mens',
                 season: 'Universal',
                 type: type,
                 cover: String(jQuery('div.a3-dgallery > div.a3dg-nav > div.a3dg-thumbs > ul > li.first_item > a').attr('href')),
